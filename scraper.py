@@ -45,6 +45,8 @@ def scrape_case(source, url):
         title, value = row.findall('./td')
         name = slugify(element_text(title), sep='_')
         value = element_text(value)
+        if value is None:
+            continue
         if name == 'charges':
             entity.summary = value
         elif name == 'present_family_name':
