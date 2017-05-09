@@ -40,7 +40,6 @@ def scrape_case(source, url):
         alias = entity.create_alias()
         alias.name = ' '.join((first, last))
 
-    dob, pob = None, None
     for row in doc.findall('.//div[@class="bloc_detail"]//tr'):
         title, value = row.findall('./td')
         name = slugify(element_text(title), sep='_')
@@ -60,16 +59,12 @@ def scrape_case(source, url):
         elif name == 'sex':
             entity.gender = SEXES[value]
         elif name == 'date_of_birth':
-            dob = value.split('(')[0]
+            birth_date = entity.create_birth_date()
+            birth_date.date = value.split('(')[0]
         elif name == 'place_of_birth':
-            pob = value
-        # else:
-        #     print name
+            birth_place = entity.create_birth_place()
+            birth_place.date = value
 
-    if dob is not None or pob is not None:
-        birth = entity.create_birth()
-        birth.date = dob
-        birth.place = pob
     entity.save()
 
 
